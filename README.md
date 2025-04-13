@@ -1,4 +1,4 @@
-# IWNO6: Interacțiunea containerelor
+# IWNO7: Crearea unei aplicații multi-container
 
 * **Autor:** Straton Alexandru  
 * **Grupa:** IA-2302  
