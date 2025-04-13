@@ -243,13 +243,13 @@ git push origin main
 
     - Ordinea în care sunt pornite containerele definite în fișierul `docker-compose.yml` nu este strict determinată de ordinea în care sunt listate în fișier, ci depinde de dependențele implicite și de configurația rețelei și volumelor. 
     În cazul proiectului descris, fișierul `docker-compose.yml` nu specifică explicit dependențe între servicii folosind `depends_on`. Prin urmare, `Docker Compose` pornește containerele în mod concurent, dar cu anumite considerații:
-    <br>
+
     - Containerele implicate:
 
         - frontend (Nginx)
         - backend (PHP-FPM)
         - database (MariaDB)
-    <br>
+
     - Comportamentul `Docker Compose`:
 
         - `Docker Compose` încearcă să pornească toate containerele simultan.
@@ -260,17 +260,14 @@ git push origin main
         1. `database (MariaDB)`
         2. `backend (PHP-FPM)`
         3. `frontend (Nginx)`
-
-    <br>   
+  
 2. **Unde sunt stocate datele bazei de date?**
 
    - Datele bazei de date sunt stocate într-un volum `Docker` numit `db_data`, montat în containerul database la calea `/var/lib/mysql`. 
    Pe gazdă, acestea se află într-un director gestionat de `Docker`, de obicei în `/var/lib/docker/volumes`.
-    <br>
 3. **Cum se numesc containerele proiectului?**
 
    - Numele containerelor proiectului sunt generate automat de `Docker Compose` pe baza numelui proiectului și al serviciilor definite în fișierul `docker-compose.yml`. În cazul dat, proiectul se află în directorul `containers07`, iar serviciile definite sunt `frontend`, `backend` și `database`.
-    <br>
    - Numele containerelor:
         Pe baza configurației furnizate, containerele vor fi numite:
 
@@ -278,7 +275,6 @@ git push origin main
         - Pentru serviciul `backend`: `containers07_backend_1`
         - Pentru serviciul `database`: `containers07_database_1`
 
-    <br>
     Putem confirma aceste nume rulând comanda:
 
     ```bash
