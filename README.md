@@ -284,89 +284,89 @@ git push origin main
 
 4. **Trebuie să adăugați încă un fișier `app.env` cu variabila de mediu `APP_VERSION` pentru serviciile `backend` și `frontend`. Cum se face acest lucru?**
 
-- Pentru a adăuga un fișier `app.env` cu variabila de mediu `APP_VERSION` pentru serviciile `backend` și `frontend`, urmează acești pași:
+    - Pentru a adăuga un fișier `app.env` cu variabila de mediu `APP_VERSION` pentru serviciile `backend` și `frontend`, urmează acești pași:
 
-    1. Creează fișierul `app.env`
-    - În rădăcina proiectului (containers07), creează fișierul `app.env`:
-        ```bash
-        New-Item -ItemType File -Name "app.env"
-        ```
-        Adaugă următoarea linie în fișierul `app.env`
+        1. Creează fișierul `app.env`
+        - În rădăcina proiectului (containers07), creează fișierul `app.env`:
+            ```bash
+            New-Item -ItemType File -Name "app.env"
+            ```
+            Adaugă următoarea linie în fișierul `app.env`
 
-        ```bash
-        APP_VERSION=1.0.0
-        ```
+            ```bash
+            APP_VERSION=1.0.0
+            ```
 
-    2. Actualizează fișierul `docker-compose.yml`
+        2. Actualizează fișierul `docker-compose.yml`
 
-    - Modifică fișierul `docker-compose.yml` pentru a include fișierul `app.env `în serviciile `frontend` și `backend`. 
-    Adaugă directiva `env_file `pentru ambele servicii, astfel încât să arate așa:
+        - Modifică fișierul `docker-compose.yml` pentru a include fișierul `app.env `în serviciile `frontend` și `backend`. 
+        Adaugă directiva `env_file `pentru ambele servicii, astfel încât să arate așa:
 
-        ```bash
-        version: '3.9'
+            ```bash
+            version: '3.9'
 
-        services:
-        frontend:
-            image: nginx:1.19
-            volumes:
-            - ./mounts/site:/var/www/html
-            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-            ports:
-            - "80:80"
+            services:
+            frontend:
+                image: nginx:1.19
+                volumes:
+                - ./mounts/site:/var/www/html
+                - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+                ports:
+                - "80:80"
+                networks:
+                - internal
+                env_file:
+                - app.env
+            backend:
+                image: php:7.4-fpm
+                volumes:
+                - ./mounts/site:/var/www/html
+                networks:
+                - internal
+                env_file:
+                - mysql.env
+                - app.env
+            database:
+                image: mysql:8.0
+                env_file:
+                - mysql.env
+                networks:
+                - internal
+                volumes:
+                - db_data:/var/lib/mysql
+
             networks:
-            - internal
-            env_file:
-            - app.env
-        backend:
-            image: php:7.4-fpm
+            internal: {}
+
             volumes:
-            - ./mounts/site:/var/www/html
-            networks:
-            - internal
-            env_file:
-            - mysql.env
-            - app.env
-        database:
-            image: mysql:8.0
-            env_file:
-            - mysql.env
-            networks:
-            - internal
-            volumes:
-            - db_data:/var/lib/mysql
+            db_data: {}
+            ```
+        3. Adaugă `app.env` în `.gitignore`
 
-        networks:
-        internal: {}
-
-        volumes:
-        db_data: {}
-        ```
-    3. Adaugă `app.env` în `.gitignore`
-
-    - Pentru a preveni expunerea fișierului `app.env` (care ar putea conține informații sensibile în viitor), adaugă-l în fișierul `.gitignore`:
-        ```bash
-        app.env
-        ```
-    4. Repornește containerele
-    - Pentru ca modificările să intre în vigoare, repornește containerele:
-        ```bash
-        docker-compose down
-        docker-compose up -d
-        ```
+        - Pentru a preveni expunerea fișierului `app.env` (care ar putea conține informații sensibile în viitor), adaugă-l în fișierul `.gitignore`:
+            ```bash
+            app.env
+            ```
+        4. Repornește containerele
+        - Pentru ca modificările să intre în vigoare, repornește containerele:
+            ```bash
+            docker-compose down
+            docker-compose up -d
+            ```
 --- 
 ### 9. Concluzie
 
-Această lucrare a oferit o experiență practică în gestionarea unei aplicații multi-container utilizând `Docker Compose`, consolidând competențele în orchestrarea containerelor `Docker`. Am învățat să:
+- Această lucrare a oferit o experiență practică în gestionarea unei aplicații multi-container utilizând `Docker Compose`, consolidând competențele în orchestrarea containerelor `Docker`. Am învățat să:
 
-- Configurez și să lansez o aplicație `PHP` bazată pe trei containere: `Nginx`, `PHP-FPM` și `MariaDB`, utilizând `docker-compose`.
-- Creez și să gestionez fișiere de configurare, cum ar fi `docker-compose.yml`, `nginx/default.conf` și fișiere de mediu (`mysql.env`).
-- Stabilesc o `rețea internă` pentru comunicarea securizată între containere.
-- Montez volume pentru a partaja fișierele aplicației și pentru a persista datele bazei de date.
-- Testez și să verific funcționarea aplicației accesând site-ul la `http://localhost`.
+    - Configurez și să lansez o aplicație `PHP` bazată pe trei containere: `Nginx`, `PHP-FPM` și `MariaDB`, utilizând `docker-compose`.
+    - Creez și să gestionez fișiere de configurare, cum ar fi `docker-compose.yml`, `nginx/default.conf` și fișiere de mediu (`mysql.env`).
+    - Stabilesc o `rețea internă` pentru comunicarea securizată între containere.
+    - Montez volume pentru a partaja fișierele aplicației și pentru a persista datele bazei de date.
+    - Testez și să verific funcționarea aplicației accesând site-ul la `http://localhost`.
 
-Rezultatul final a fost o aplicație `PHP` funcțională, cu o separare clară a responsabilităților:
-- `Nginx` pentru gestionarea cererilor statice și direcționarea celor dinamice
-- `PHP-FPM` pentru procesarea codului `PHP` și `MariaDB` pentru stocarea datelor. 
+- Rezultatul final a fost o aplicație `PHP` funcțională, cu o separare clară a responsabilităților:
+    - `Nginx` pentru gestionarea cererilor statice și direcționarea celor dinamice
+    - `PHP-FPM` pentru procesarea codului `PHP` și `MariaDB` pentru stocarea datelor. 
 
 Această abordare modulară și scalabilă demonstrează avantajele utilizării `Docker Compose` pentru dezvoltarea și gestionarea aplicațiilor web complexe.
 
